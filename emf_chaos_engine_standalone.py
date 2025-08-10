@@ -13,16 +13,18 @@ License: MIT
 import sys
 import time
 import random
+import math
 import threading
 from datetime import datetime
 
 try:
     from PyQt6.QtWidgets import (
         QApplication, QMainWindow, QWidget, QVBoxLayout, 
-        QHBoxLayout, QLabel, QPushButton, QTextEdit, QFrame
+        QHBoxLayout, QLabel, QPushButton, QTextEdit, QFrame, QScrollArea
     )
-    from PyQt6.QtCore import QThread, pyqtSignal, QTimer
+    from PyQt6.QtCore import QThread, pyqtSignal, QTimer, Qt
     from PyQt6.QtGui import QFont, QPalette, QColor
+    from rf_amplification_module import SimpleRFAmplifier
 except ImportError:
     print("❌ PyQt6 not found. Installing...")
     import subprocess
@@ -35,11 +37,12 @@ except ImportError:
     from PyQt6.QtGui import QFont, QPalette, QColor
 
 class EMFChaosEngine:
-    """Core EMF chaos pattern generator"""
+    """Core EMF chaos pattern generator with RF amplification"""
     
     def __init__(self):
         self.patterns = ['ambient_monitoring', 'dynamic_chaos', 'quad_reflection', 'swiss_energy_disruption']
         self.reflection_types = ['Dynamic', 'Quad', 'Swiss Energy', 'Ambient', 'Chaos Burst', 'Mirror']
+        self.rf_amplifier = SimpleRFAmplifier()
     
     def generate_dynamic_chaos_pattern(self, duration_ms=500):
         """Generate a dynamic chaos pattern"""
