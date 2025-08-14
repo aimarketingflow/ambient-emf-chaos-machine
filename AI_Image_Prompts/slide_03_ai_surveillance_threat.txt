@@ -1,0 +1,19 @@
+SLIDE 3: AI-Enabled Surveillance Threat Landscape
+==============================================
+
+PROMPT FOR AI IMAGE GENERATION:
+
+"Professional cybersecurity visualization showing urban surveillance network topology: 3D cityscape with interconnected threat layers - cell towers with glowing Stingray device overlays, Bluetooth beacon mesh networks pulsing with data collection points in electric blue, WiFi access points with expanding tracking radius indicators in red. Central smartphone in the foreground broadcasting multiple colored RF signal streams (WiFi in blue, Bluetooth in purple, cellular in green, NFC in orange, GPS in yellow). AI brain symbols floating above GitHub repositories generating new attack vectors with code streams. Heat map overlay showing surveillance density with red zones for high-threat areas (shopping malls, airports, protests). Animated data flow streams showing personal information being harvested and transmitted to corporate servers and government databases. Dark professional background with glowing network connections, electromagnetic field visualizations, and '50,000+ NEW TOOLS MONTHLY' text overlay. Style: Professional cybersecurity infographic with dark theme, electric blue and red accents, technical precision."
+
+KEY VISUAL ELEMENTS:
+- 3D urban environment with surveillance infrastructure
+- Multiple RF signal types in different colors
+- AI-generated attack vectors from GitHub
+- Heat map showing threat density
+- Data flow streams to corporate/government servers
+- Professional cybersecurity aesthetic
+- Dark background with glowing connections
+
+DIMENSIONS: 1920x1080 (16:9 presentation format)
+STYLE: Professional cybersecurity visualization
+COLOR SCHEME: Dark background, electric blue, red, green, purple accents

@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMF Chaos Engine - Investor Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background animations */
+        .bg-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .rf-wave {
+            position: absolute;
+            width: 200%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #06B6D4, transparent);
+            animation: rfFlow 8s linear infinite;
+            opacity: 0.3;
+        }
+
+        .rf-wave:nth-child(1) { top: 20%; animation-delay: 0s; }
+        .rf-wave:nth-child(2) { top: 40%; animation-delay: -2s; }
+        .rf-wave:nth-child(3) { top: 60%; animation-delay: -4s; }
+        .rf-wave:nth-child(4) { top: 80%; animation-delay: -6s; }
+
+        @keyframes rfFlow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(0%); }
+        }
+
+        .chaos-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #7C3AED;
+            border-radius: 50%;
+            animation: chaosFloat 6s ease-in-out infinite;
+            box-shadow: 0 0 10px #7C3AED;
+        }
+
+        @keyframes chaosFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+        }
+
+        /* Slide container */
+        .presentation-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            z-index: 10;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.5s ease-in-out;
+            pointer-events: none;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
+        }
+
+        .slide.prev {
+            transform: translateX(-100px);
+        }
+
+        /* Navigation */
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .nav-button {
+            background: linear-gradient(45deg, #6B46C1, #3B82F6);
+            border: none;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .nav-button.active {
+            background: linear-gradient(45deg, #06B6D4, #3B82F6);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(6, 182, 212, 0.3);
+            z-index: 1000;
+            color: #06B6D4;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .arrow-nav {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(6, 182, 212, 0.3);
+            color: #06B6D4;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .arrow-nav:hover {
+            background: rgba(6, 182, 212, 0.2);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .arrow-prev {
+            left: 30px;
+        }
+
+        .arrow-next {
+            right: 30px;
+        }
+
+        .arrow-nav.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Slide-specific styles */
+        .slide-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #FF6B35, #F7931E, #FFD700);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(255, 107, 53, 0.5);
+            line-height: 1.1;
+            max-width: 90vw;
+        }
+
+        .slide-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            color: #E2E8F0;
+            font-weight: 300;
+            opacity: 0.9;
+            max-width: 90vw;
+        }
+
+        .aimf-branding {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: clamp(0.8rem, 1.5vw, 1rem);
+            color: #06B6D4;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            max-width: 90vw;
+        }
+
+        .aimf-logo {
+            width: clamp(30px, 5vw, 50px);
+            height: clamp(30px, 5vw, 50px);
+            filter: drop-shadow(0 0 8px #06B6D4);
+            animation: logoGlow 3s infinite alternate;
+        }
+
+        .viral-badge {
+            position: absolute;
+            top: 8%;
+            right: 5%;
+            width: clamp(120px, 15vw, 180px);
+            height: clamp(120px, 15vw, 180px);
+            border: 3px dashed #06B6D4;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: viralPulse 2s infinite;
+            background: rgba(6, 182, 212, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .viral-text {
+            color: #06B6D4;
+            font-size: clamp(0.6rem, 1.2vw, 0.9rem);
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .key-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+            max-width: 90vw;
+            width: 100%;
+        }
+
+        .point-card {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 2px solid rgba(6, 182, 212, 0.3);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .point-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #06B6D4, #3B82F6);
+        }
+
+        .point-header {
+            color: #06B6D4;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .point-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #FFFFFF;
+        }
+
+        .point-text {
+            color: #CBD5E0;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes logoGlow {
+            0% { filter: drop-shadow(0 0 10px #06B6D4); }
+            100% { filter: drop-shadow(0 0 20px #06B6D4) drop-shadow(0 0 30px #7C3AED); }
+        }
+
+        @keyframes viralPulse {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+                border-color: #06B6D4;
+            }
+            50% {
+                transform: scale(1.05) rotate(2deg);
+                border-color: #3B82F6;
+                box-shadow: 0 0 30px rgba(6, 182, 212, 0.5);
+            }
+        }
+
+        /* Problem slide specific */
+        .problem-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #EF4444, #F97316, #EAB308);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+            line-height: 1.1;
+            max-width: 90vw;
+        }
+
+        /* Crisis slide specific */
+        .crisis-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #DC2626, #EA580C, #D97706);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(220, 38, 38, 0.5);
+            line-height: 1.1;
+            max-width: 90vw;
+        }
+
+        /* Market slide specific */
+        .market-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #059669, #0891B2, #0284C7);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(5, 150, 105, 0.5);
+            line-height: 1.1;
+            max-width: 90vw;
+        }
+
+        /* Validation slide specific */
+        .validation-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #7C3AED, #A855F7, #C084FC);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(124, 58, 237, 0.5);
+            line-height: 1.1;
+            max-width: 90vw;
+        }
+
+        /* Solution slide specific */
+        .solution-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #10B981, #06B6D4, #3B82F6);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+            line-height: 1.1;
+            max-width: 90vw;
+        }
+
+        /* Technology slide specific */
+        .tech-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #F59E0B, #EF4444, #EC4899);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(245, 158, 11, 0.5);
+            line-height: 1.1;
+            max-width: 90vw;
+        }
+
+        /* Business slide specific */
+        .business-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #059669, #0891B2, #7C3AED);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(5, 150, 105, 0.5);
+            line-height: 1.1;
+            max-width: 90vw;
+        }
+
+        /* Competition slide specific */
+        .competition-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #DC2626, #EA580C, #F59E0B);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(220, 38, 38, 0.5);
+            line-height: 1.1;
+            max-width: 90vw;
+        }
+
+        /* Team slide specific */
+        .team-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #7C3AED, #EC4899, #F59E0B);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(124, 58, 237, 0.5);
+            line-height: 1.1;
+            max-width: 90vw;
+        }
+
+        .threat-list, .market-list, .validation-list, .solution-list, .tech-list, .business-list, .competition-list, .team-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+            max-width: 90vw;
+            width: 100%;
+        }
+
+        .threat-item, .market-item, .validation-item, .solution-item, .tech-item, .business-item, .competition-item, .team-item {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 4px solid #EF4444;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .market-item {
+            border-left: 4px solid #059669;
+            border: 1px solid rgba(5, 150, 105, 0.2);
+        }
+
+        .validation-item {
+            border-left: 4px solid #7C3AED;
+            border: 1px solid rgba(124, 58, 237, 0.2);
+        }
+
+        .solution-item {
+            border-left: 4px solid #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .tech-item {
+            border-left: 4px solid #F59E0B;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .business-item {
+            border-left: 4px solid #059669;
+            border: 1px solid rgba(5, 150, 105, 0.2);
+        }
+
+        .competition-item {
+            border-left: 4px solid #DC2626;
+            border: 1px solid rgba(220, 38, 38, 0.2);
+        }
+
+        .team-item {
+            border-left: 4px solid #7C3AED;
+            border: 1px solid rgba(124, 58, 237, 0.2);
+        }
+
+        .item-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #FFFFFF;
+        }
+
+        .item-text {
+            color: #CBD5E0;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .item-stat {
+            color: #06B6D4;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="rf-wave"></div>
+        <div class="rf-wave"></div>
+        <div class="rf-wave"></div>
+        <div class="rf-wave"></div>
+        <div class="chaos-particle" style="top: 10%; left: 20%; animation-delay: 0s;"></div>
+        <div class="chaos-particle" style="top: 30%; left: 80%; animation-delay: 2s;"></div>
+        <div class="chaos-particle" style="top: 70%; left: 10%; animation-delay: 4s;"></div>
+        <div class="chaos-particle" style="top: 90%; left: 60%; animation-delay: 6s;"></div>
+    </div>
+
+    <div class="presentation-container">
+        <!-- Slide Counter -->
+        <div class="slide-counter" id="slideCounter">1 / 5</div>
+        
+        <!-- Arrow Navigation -->
+        <div class="arrow-nav arrow-prev" id="prevArrow" onclick="previousSlide()">‹</div>
+        <div class="arrow-nav arrow-next" id="nextArrow" onclick="nextSlide()">›</div>
+        
+        <!-- Slide 1: Viral Hook -->
+        <div class="slide active" id="slide1">
+            <h1 class="slide-title">The Weekend Project<br>That Broke the Internet</h1>
+            <h2 class="slide-subtitle">DMs and Recruiters Flooding In - Market Validation in Real Time</h2>
+            
+            <div class="aimf-branding">
+                <img src="/Users/flowgirl/Documents/MobileShield/AIMF_Brandkit/Original_Icon_Only-Contact-Admin.png.webp" alt="AIMF Logo" class="aimf-logo">
+                <span>AIMF LLC - WORK SMARTER, NOT HARDER</span>
+            </div>
+
+
+
+            <div class="key-points">
+                <div class="viral-badge">
+                    <div class="viral-text">DMs + RECRUITERS<br>IN 24HRS</div>
+                </div>
+                <div class="point-card">
+                    <div class="point-icon">🤖</div>
+                    <h3>AI Makes Hacking Mainstream</h3>
+                    <p>Anyone can now build sophisticated RF tools - the barrier to entry just collapsed</p>
+                </div>
+                <div class="point-card">
+                    <div class="point-icon">📈</div>
+                    <h3>Immediate Market Response</h3>
+                    <p>Posted yesterday afternoon - already getting DMs and recruiter attention within 24 hours</p>
+                </div>
+                <div class="point-card">
+                    <div class="point-icon">🎯</div>
+                    <h3>Perfect Market Timing</h3>
+                    <p>AI democratizes hacking tools - consumers need defense solutions NOW</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Problem Statement -->
+        <div class="slide" id="slide2">
+            <div class="aimf-branding">
+                <img src="/Users/flowgirl/Documents/MobileShield/AIMF_Brandkit/Original_Icon_Only-Contact-Admin.png.webp" alt="AIMF Logo" class="aimf-logo">
+                <span>AIMF LLC - WORK SMARTER, NOT HARDER</span>
+            </div>
+            <h1 class="problem-title">🚨 AI Democratized Hacking Overnight</h1>
+            <h2 class="slide-subtitle">Your Phone Became 1000x More Vulnerable This Year</h2>
+            
+            <div class="threat-list">
+                <div class="threat-item">
+                    <div class="threat-icon">🤖</div>
+                    <h3>AI makes advanced hacking accessible to anyone</h3>
+                    <p>ChatGPT can write RF exploitation code - technical barriers eliminated</p>
+                </div>
+                <div class="threat-item">
+                    <div class="threat-icon">📈</div>
+                    <h3>Hacking tools proliferating exponentially</h3>
+                    <p>AI-generated exploits flooding GitHub - script kiddies becoming sophisticated</p>
+                </div>
+                <div class="threat-item">
+                    <div class="threat-icon">⚡</div>
+                    <h3>RF attacks becoming mainstream threat</h3>
+                    <p>Weekend projects like EMF Chaos Engine prove anyone can build detection systems</p>
+                </div>
+                <div class="threat-item">
+                    <div class="threat-icon">🚨</div>
+                    <h3>Consumer awareness exploding</h3>
+                    <p>DMs and recruiter interest within 24 hours - market is ready NOW</p>
+                </div>
+                <div class="threat-item">
+                    <div class="threat-icon">🎯</div>
+                    <h3>Perfect storm: AI + RF + Consumer awareness</h3>
+                    <p>Technical capability meets market demand at exactly the right moment</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Privacy Crisis -->
+        <div class="slide" id="slide3">
+            <div class="aimf-branding">
+                <img src="/Users/flowgirl/Documents/MobileShield/AIMF_Brandkit/Original_Icon_Only-Contact-Admin.png.webp" alt="AIMF Logo" class="aimf-logo">
+                <span>AIMF LLC - WORK SMARTER, NOT HARDER</span>
+            </div>
+            <h1 class="crisis-title">🚨 The Defense Gap is Massive</h1>
+            <h2 class="slide-subtitle">AI Democratizes Hacking - Threat Level: CRITICAL</h2>
+            
+            <div class="threat-list">
+                <div class="threat-item">
+                    <div class="threat-icon">🤖</div>
+                    <h3>AI makes advanced hacking accessible to anyone</h3>
+                    <p>ChatGPT can write RF exploitation code - technical barriers eliminated</p>
+                </div>
+                <div class="threat-item">
+                    <div class="threat-icon">📈</div>
+                    <h3>Hacking tools proliferating exponentially</h3>
+                    <p>AI-generated exploits flooding GitHub - script kiddies becoming sophisticated</p>
+                </div>
+                <div class="threat-item">
+                    <div class="threat-icon">⚡</div>
+                    <h3>RF attacks becoming mainstream threat</h3>
+                    <p>Weekend projects like EMF Chaos Engine prove anyone can build detection systems</p>
+                </div>
+                <div class="threat-item">
+                    <div class="threat-icon">🚨</div>
+                    <h3>Consumer awareness exploding</h3>
+                    <p>DMs and recruiter interest within 24 hours - market is ready NOW</p>
+                </div>
+                <div class="threat-item">
+                    <div class="threat-icon">🎯</div>
+                    <h3>Perfect storm: AI + RF + Consumer awareness</h3>
+                    <p>Technical capability meets market demand at exactly the right moment</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Market Opportunity -->
+        <div class="slide" id="slide4">
+            <div class="aimf-branding">
+                <img src="/Users/flowgirl/Documents/MobileShield/AIMF_Brandkit/Original_Icon_Only-Contact-Admin.png.webp" alt="AIMF Logo" class="aimf-logo">
+                <span>AIMF LLC - WORK SMARTER, NOT HARDER</span>
+            </div>
+            <h1 class="market-title">💰 $45B Market + AI Acceleration</h1>
+            <h2 class="slide-subtitle">AI Hacking Revolution Creates Massive Defense Gap</h2>
+            
+            <div class="market-list">
+                <div class="market-item">
+                    <div class="market-icon">🚀</div>
+                    <h3>$45B Market + AI Acceleration</h3>
+                    <p>Cybersecurity growing 12% annually - AI threat multiplies urgency 10x</p>
+                </div>
+                <div class="market-item">
+                    <div class="market-icon">⚡</div>
+                    <h3>AI Democratizes Both Sides</h3>
+                    <p>If AI makes hacking accessible, AI must make defense accessible too</p>
+                </div>
+                <div class="market-item">
+                    <div class="market-icon">📈</div>
+                    <h3>Immediate Market Validation</h3>
+                    <p>DMs and recruiters within 24 hours - pent-up demand is massive</p>
+                </div>
+                <div class="market-item">
+                    <div class="market-icon">🎯</div>
+                    <h3>First-Mover Advantage</h3>
+                    <p>AI hacking threat is brand new - we're first to market with consumer defense</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Viral Market Validation -->
+        <div class="slide" id="slide5">
+            <div class="aimf-branding">
+                <img src="/Users/flowgirl/Documents/MobileShield/AIMF_Brandkit/Original_Icon_Only-Contact-Admin.png.webp" alt="AIMF Logo" class="aimf-logo">
+                <span>AIMF LLC - WORK SMARTER, NOT HARDER</span>
+            </div>
+            <h1 class="validation-title">🔥 The Internet Proved Market Demand</h1>
+            <h2 class="slide-subtitle">24-Hour Response Proves AI Hacking Urgency</h2>
+            
+            <div class="validation-list">
+                <div class="validation-item">
+                    <div class="validation-icon">📱</div>
+                    <h3>DMs Flooding In</h3>
+                    <p>Posted yesterday afternoon - immediate direct messages from industry professionals</p>
+                </div>
+                <div class="validation-item">
+                    <div class="validation-icon">💼</div>
+                    <h3>Recruiters Circling</h3>
+                    <p>Talent acquisition teams reaching out within 24 hours - market recognizes value</p>
+                </div>
+                <div class="validation-item">
+                    <div class="validation-icon">🤖</div>
+                    <h3>AI Timing Validation</h3>
+                    <p>Market immediately understood: if AI makes hacking easy, defense tools are critical</p>
+                </div>
+                <div class="validation-item">
+                    <div class="validation-icon">⚡</div>
+                    <h3>Perfect Storm Confirmed</h3>
+                    <p>AI democratizes hacking → Consumer awareness spikes → Defense solutions needed NOW</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: Solution -->
+        <div class="slide" id="slide6">
+            <div class="aimf-branding">
+                <img src="/Users/flowgirl/Documents/MobileShield/AIMF_Brandkit/Original_Icon_Only-Contact-Admin.png.webp" alt="AIMF Logo" class="aimf-logo">
+                <span>AIMF LLC - WORK SMARTER, NOT HARDER</span>
+            </div>
+            <h1 class="solution-title">🛡️ Consumer RF Defense Revolution</h1>
+            <h2 class="slide-subtitle">First AI-Powered Consumer RF Privacy Solution</h2>
+            
+            <div class="solution-list">
+                <div class="solution-item">
+                    <div class="solution-icon">🔍</div>
+                    <h3>Real-Time RF Detection</h3>
+                    <p>Detect Stingrays, tracking beacons, and surveillance networks in real-time</p>
+                </div>
+                <div class="solution-item">
+                    <div class="solution-icon">🛡️</div>
+                    <h3>Active RF Shielding</h3>
+                    <p>288% range amplification with surgical precision - protect without disrupting</p>
+                </div>
+                <div class="solution-item">
+                    <div class="solution-icon">🤖</div>
+                    <h3>AI-Powered Threat Analysis</h3>
+                    <p>Machine learning identifies new attack patterns and adapts defenses automatically</p>
+                </div>
+                <div class="solution-item">
+                    <div class="solution-icon">📱</div>
+                    <h3>Consumer-Friendly Interface</h3>
+                    <p>Simple mobile app - no technical expertise required for enterprise-grade protection</p>
+                </div>
+                <div class="solution-item">
+                    <div class="solution-icon">🔓</div>
+                    <h3>Open Source Transparency</h3>
+                    <p>Full code transparency builds trust - you can verify exactly what it does</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Technology -->
+        <div class="slide" id="slide7">
+            <div class="aimf-branding">
+                <img src="/Users/flowgirl/Documents/MobileShield/AIMF_Brandkit/Original_Icon_Only-Contact-Admin.png.webp" alt="AIMF Logo" class="aimf-logo">
+                <span>AIMF LLC - WORK SMARTER, NOT HARDER</span>
+            </div>
+            <h1 class="tech-title">⚡ 288% Range Amplification Through Chaos</h1>
+            <h2 class="slide-subtitle">Parasitic Antenna Networks + Environmental RF Modeling</h2>
+            
+            <div class="tech-list">
+                <div class="tech-item">
+                    <div class="tech-icon">🌐</div>
+                    <h3>Parasitic Antenna Networks</h3>
+                    <p>Turn environmental metal into amplification infrastructure - 288% range boost</p>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">🌪️</div>
+                    <h3>6 Chaos Patterns</h3>
+                    <p>Adaptive interference generation that evolves with threat landscape</p>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">🎯</div>
+                    <h3>Surgical Precision Targeting</h3>
+                    <p>Zero collateral interference - protect your privacy without disrupting others</p>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">🔄</div>
+                    <h3>Real-Time Environmental Analysis</h3>
+                    <p>Dynamic pattern adjustment based on RF environment and threat detection</p>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">⚡</div>
+                    <h3>Battle-Tested Performance</h3>
+                    <p>Proven effective against real-world surveillance - not lab theory</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Business Model -->
+        <div class="slide" id="slide8">
+            <div class="aimf-branding">
+                <img src="/Users/flowgirl/Documents/MobileShield/AIMF_Brandkit/Original_Icon_Only-Contact-Admin.png.webp" alt="AIMF Logo" class="aimf-logo">
+                <span>AIMF LLC - WORK SMARTER, NOT HARDER</span>
+            </div>
+            <h1 class="business-title">💰 Multiple Revenue Streams, High Margins</h1>
+            <h2 class="slide-subtitle">$50M Year 3 Revenue Target - 70% Gross Margins</h2>
+            
+            <div class="business-list">
+                <div class="business-item">
+                    <div class="business-icon">📱</div>
+                    <h3>Consumer Hardware - $499 Retail</h3>
+                    <p>70% gross margin, targeting 1M+ smartphone users seeking RF privacy</p>
+                </div>
+                <div class="business-item">
+                    <div class="business-icon">📊</div>
+                    <h3>Mobile App Subscriptions</h3>
+                    <p>$9.99/month RF monitoring and threat alerts - recurring revenue model</p>
+                </div>
+                <div class="business-item">
+                    <div class="business-icon">🏢</div>
+                    <h3>Enterprise Licensing</h3>
+                    <p>Corporate security solutions - $50K+ annual contracts with Fortune 500</p>
+                </div>
+                <div class="business-item">
+                    <div class="business-icon">🎓</div>
+                    <h3>Training & Consulting</h3>
+                    <p>RF security education services - $2K/day consulting rates</p>
+                </div>
+                <div class="business-item">
+                    <div class="business-icon">🏛️</div>
+                    <h3>Government Contracts</h3>
+                    <p>Surveillance and counter-surveillance applications - essential on both sides</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Competition -->
+        <div class="slide" id="slide9">
+            <div class="aimf-branding">
+                <img src="/Users/flowgirl/Documents/MobileShield/AIMF_Brandkit/Original_Icon_Only-Contact-Admin.png.webp" alt="AIMF Logo" class="aimf-logo">
+                <span>AIMF LLC - WORK SMARTER, NOT HARDER</span>
+            </div>
+            <h1 class="competition-title">🚀 No Direct Competition in Consumer Space</h1>
+            <h2 class="slide-subtitle">Blue Ocean Market with Unbreachable Competitive Moat</h2>
+            
+            <div class="competition-list">
+                <div class="competition-item">
+                    <div class="competition-icon">🏢</div>
+                    <h3>Enterprise Security</h3>
+                    <p>Complex, expensive, corporate-focused - $50K+ solutions inaccessible to consumers</p>
+                </div>
+                <div class="competition-item">
+                    <div class="competition-icon">📱</div>
+                    <h3>Consumer Privacy Apps</h3>
+                    <p>VPNs, encrypted messaging (software only) - zero RF protection capability</p>
+                </div>
+                <div class="competition-item">
+                    <div class="competition-icon">🎯</div>
+                    <h3>RF Detection Equipment</h3>
+                    <p>Military/government only, not consumer accessible - we're first to market</p>
+                </div>
+                <div class="competition-item">
+                    <div class="competition-icon">🧠</div>
+                    <h3>Innovation Source Moat</h3>
+                    <p>Multi-dimensional creativity (music, flow arts, AI) cannot be replicated by corporations</p>
+                </div>
+                <div class="competition-item">
+                    <div class="competition-icon">⚡</div>
+                    <h3>Battle-Tested Credibility</h3>
+                    <p>Real-world proven under hostile conditions vs. safe corporate lab experiments</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Team -->
+        <div class="slide" id="slide10">
+            <div class="aimf-branding">
+                <img src="/Users/flowgirl/Documents/MobileShield/AIMF_Brandkit/Original_Icon_Only-Contact-Admin.png.webp" alt="AIMF Logo" class="aimf-logo">
+                <span>AIMF LLC - WORK SMARTER, NOT HARDER</span>
+            </div>
+            <h1 class="team-title">🎯 Built by Someone Who Lived It</h1>
+            <h2 class="slide-subtitle">Multi-Dimensional Innovation Under Hostile Conditions</h2>
+            
+            <div class="team-list">
+                <div class="team-item">
+                    <div class="team-icon">⚔️</div>
+                    <h3>Battle-Tested Under Attack</h3>
+                    <p>2023-2025: Built 4 major security tools while being hacked, defrauded, attacked</p>
+                </div>
+                <div class="team-item">
+                    <div class="team-icon">🎨</div>
+                    <h3>Multi-Modal Innovation</h3>
+                    <p>Music production, fire spinning, flow arts, AI collaboration - unique creative source</p>
+                </div>
+                <div class="team-item">
+                    <div class="team-icon">🧠</div>
+                    <h3>Neural Pathway Reconstruction</h3>
+                    <p>Regressive memory meditation enables breakthrough pattern recognition</p>
+                </div>
+                <div class="team-item">
+                    <div class="team-icon">🤖</div>
+                    <h3>Human-AI Partnership</h3>
+                    <p>"I'm a team of me and you" - leveraging AI collaboration for innovation advantage</p>
+                </div>
+                <div class="team-item">
+                    <div class="team-icon">💎</div>
+                    <h3>Irreplaceable Innovation Capability</h3>
+                    <p>"They can never come up with the ideas I do because they aren't equipped"</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="navigation">
+            <button class="nav-button active" onclick="goToSlide(1)">Hook</button>
+            <button class="nav-button" onclick="goToSlide(2)">Problem</button>
+            <button class="nav-button" onclick="goToSlide(3)">Crisis</button>
+            <button class="nav-button" onclick="goToSlide(4)">Market</button>
+            <button class="nav-button" onclick="goToSlide(5)">Validation</button>
+            <button class="nav-button" onclick="goToSlide(6)">Solution</button>
+            <button class="nav-button" onclick="goToSlide(7)">Technology</button>
+            <button class="nav-button" onclick="goToSlide(8)">Business</button>
+            <button class="nav-button" onclick="goToSlide(9)">Competition</button>
+            <button class="nav-button" onclick="goToSlide(10)">Team</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 10;
+        
+        function goToSlide(slideNumber) {
+            if (slideNumber < 1 || slideNumber > totalSlides) return;
+            
+            // Hide all slides
+            document.querySelectorAll('.slide').forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index + 1 < slideNumber) {
+                    slide.classList.add('prev');
+                }
+            });
+            
+            // Show target slide
+            document.getElementById(`slide${slideNumber}`).classList.add('active');
+            
+            // Update navigation buttons
+            document.querySelectorAll('.nav-button').forEach((btn, index) => {
+                btn.classList.toggle('active', index + 1 === slideNumber);
+            });
+            
+            // Update slide counter
+            document.getElementById('slideCounter').textContent = `${slideNumber} / ${totalSlides}`;
+            
+            // Update arrow states
+            document.getElementById('prevArrow').classList.toggle('disabled', slideNumber === 1);
+            document.getElementById('nextArrow').classList.toggle('disabled', slideNumber === totalSlides);
+            
+            currentSlide = slideNumber;
+        }
+        
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                goToSlide(currentSlide + 1);
+            }
+        }
+        
+        function previousSlide() {
+            if (currentSlide > 1) {
+                goToSlide(currentSlide - 1);
+            }
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowRight':
+                case ' ':
+                    e.preventDefault();
+                    nextSlide();
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    previousSlide();
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    goToSlide(1);
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    goToSlide(totalSlides);
+                    break;
+                case 'f':
+                case 'F':
+                    e.preventDefault();
+                    toggleFullscreen();
+                    break;
+                case 'Escape':
+                    if (document.fullscreenElement) {
+                        document.exitFullscreen();
+                    }
+                    break;
+            }
+        });
+        
+        // Fullscreen toggle
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log('Error attempting to enable fullscreen:', err.message);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+        
+        // Click navigation on slides (left/right halves)
+        document.addEventListener('click', (e) => {
+            const clickX = e.clientX;
+            const windowWidth = window.innerWidth;
+            
+            // Ignore clicks on navigation elements
+            if (e.target.closest('.navigation') || 
+                e.target.closest('.arrow-nav') || 
+                e.target.closest('.slide-counter')) {
+                return;
+            }
+            
+            // Left half = previous, right half = next
+            if (clickX < windowWidth / 2) {
+                previousSlide();
+            } else {
+                nextSlide();
+            }
+        });
+        
+        // Swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextSlide(); // Swipe left = next
+                } else {
+                    previousSlide(); // Swipe right = previous
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "session_info": {
+    "session_id": "20250813_234655",
+    "start_time": "2025-08-13T23:46:55.628091",
+    "last_update": "2025-08-13T23:55:00.016079"
+  },
+  "statistics": {
+    "session_start": "2025-08-13T23:46:55.628091",
+    "total_phones": 0,
+    "max_intensity": 0,
+    "chaos_patterns": [],
+    "gsm_scans": 0
+  },
+  "live_detections": [],
+  "total_detections": 0
+}

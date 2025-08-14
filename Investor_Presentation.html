@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMF Chaos Engine - Investor Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .slide-content {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #00ff88, #00ccff, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .slide h2 {
+            font-size: 2.5em;
+            color: #00ff88;
+            margin-bottom: 20px;
+        }
+
+        .slide h3 {
+            font-size: 1.8em;
+            color: #88ccff;
+            margin-bottom: 15px;
+        }
+
+        .slide p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #cccccc;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .viral-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #00ff88;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #cccccc;
+            font-size: 1.1em;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: left;
+        }
+
+        .feature-card h4 {
+            color: #00ff88;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        .timeline-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #00ff88;
+            padding: 20px 30px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .timeline-date {
+            color: #00ff88;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .timeline-content {
+            color: #cccccc;
+            margin-top: 10px;
+        }
+
+        .market-opportunity {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 204, 255, 0.1) 100%);
+            border: 2px solid #00ff88;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+        }
+
+        .competitive-advantage {
+            background: rgba(255, 107, 107, 0.1);
+            border: 2px solid #ff6b6b;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+        }
+
+        .founder-story {
+            background: rgba(136, 204, 255, 0.1);
+            border: 2px solid #88ccff;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            text-align: left;
+        }
+
+        .quote {
+            font-style: italic;
+            font-size: 1.3em;
+            color: #88ccff;
+            border-left: 4px solid #88ccff;
+            padding-left: 20px;
+            margin: 30px 0;
+        }
+
+        .navigation {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: #00ff88;
+            transform: scale(1.5);
+        }
+
+        .cta-section {
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            color: #000;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+        }
+
+        .cta-button {
+            background: #000;
+            color: #00ff88;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 20px 10px;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .slide-number {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">🌪️ AIMF LLC</div>
+    
+    <div class="navigation" id="navigation">
+        <!-- Navigation dots will be generated by JavaScript -->
+    </div>
+
+    <!-- Slide 1: Title -->
+    <div class="slide" id="slide1">
+        <div class="slide-content">
+            <div class="viral-badge">🔥 BROKE THE INTERNET</div>
+            <h1>🌪️ EMF Chaos Engine</h1>
+            <p style="font-size: 1.5em; color: #88ccff;">The "Weekend Project" That Proved Market Demand</p>
+            <p style="font-size: 1.2em; margin-top: 30px;">
+                <span class="highlight">$10-20M Valuation</span> | 
+                <span class="highlight">Battle-Tested Technology</span> | 
+                <span class="highlight">Viral Market Validation</span>
+            </p>
+            <p style="color: #888; margin-top: 40px;">FlowBotGirl | AIMF LLC | August 2025</p>
+        </div>
+        <div class="slide-number">1/10</div>
+    </div>
+
+    <!-- Slide 2: The Problem -->
+    <div class="slide" id="slide2">
+        <div class="slide-content">
+            <h2>🚨 The Privacy Crisis</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">2,000+</span>
+                    <span class="stat-label">Daily RF Signals Per Phone</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">75+</span>
+                    <span class="stat-label">US Cities with Stingrays</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">5B</span>
+                    <span class="stat-label">Devices Under Surveillance</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">$0</span>
+                    <span class="stat-label">Consumer Protection Tools</span>
+                </div>
+            </div>
+            <p style="font-size: 1.4em; margin-top: 40px;">
+                <span class="highlight">Everyone knows they're being watched.</span><br>
+                <span class="highlight">No one has the tools to fight back.</span>
+            </p>
+        </div>
+        <div class="slide-number">2/10</div>
+    </div>
+
+    <!-- Slide 3: Viral Market Validation -->
+    <div class="slide" id="slide3">
+        <div class="slide-content">
+            <h2>🔥 Internet-Breaking Validation</h2>
+            <div class="market-opportunity">
+                <h3>August 10, 2025: Posted as "Weekend Project"</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">Hour 1</div>
+                        <div class="timeline-content">LinkedIn post goes live - casual positioning</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Hour 24</div>
+                        <div class="timeline-content">Viral explosion - "broke the internet"</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Hour 48</div>
+                        <div class="timeline-content">Multiple acquisition offers received</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Today</div>
+                        <div class="timeline-content">$10-20M valuation established</div>
+                    </div>
+                </div>
+            </div>
+            <div class="quote">
+                "Posted this casually as a weekend project. It broke LinkedIn, got acquisition offers, and proved that people are hungry for real privacy tools."
+            </div>
+        </div>
+        <div class="slide-number">3/10</div>
+    </div>
+
+    <!-- Slide 4: The Solution -->
+    <div class="slide" id="slide4">
+        <div class="slide-content">
+            <h2>🛡️ The EMF Chaos Engine</h2>
+            <p style="font-size: 1.3em; margin-bottom: 40px;">
+                <span class="highlight">See and control the invisible networks around you</span>
+            </p>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>🔍 Instant Detection</h4>
+                    <p>Reveals phones, trackers, and surveillance devices within 25 meters in real-time</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🛡️ Active Protection</h4>
+                    <p>Deploys adaptive RF shielding with 6 chaos patterns for comprehensive coverage</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📱 Consumer Ready</h4>
+                    <p>Works on $150 Raspberry Pi - no engineering degree required</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🌍 Open Source</h4>
+                    <p>Full transparency builds trust and community-driven development</p>
+                </div>
+                <div class="feature-card">
+                    <h4>⚡ Battle-Tested</h4>
+                    <p>Every component proven in real hostile environments over 2 years</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🎯 Surgical Precision</h4>
+                    <p>Targets specific threats without disrupting legitimate communications</p>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">4/10</div>
+    </div>
+
+    <!-- Slide 5: Battle-Tested Credibility -->
+    <div class="slide" id="slide5">
+        <div class="slide-content">
+            <h2>🏆 Combat-Proven Technology</h2>
+            <div class="competitive-advantage">
+                <h3>2023-2025 Battle Record</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-number">4</span>
+                        <span class="stat-label">Major Threats Neutralized</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">2</span>
+                        <span class="stat-label">Stingray Devices Defeated</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">288%</span>
+                        <span class="stat-label">Range Amplification</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Success Rate</span>
+                    </div>
+                </div>
+                <p style="font-size: 1.2em; margin-top: 30px;">
+                    <span class="highlight">This isn't experimental.</span> Every component was deployed in live hostile environments and stopped real attacks.
+                </p>
+            </div>
+            <div class="quote">
+                "Most security tools are built in labs. This was forged under fire, then validated by the internet."
+            </div>
+        </div>
+        <div class="slide-number">5/10</div>
+    </div>
+
+    <!-- Slide 6: Founder Story -->
+    <div class="slide" id="slide6">
+        <div class="slide-content">
+            <h2>🎯 Built by Someone Who Lived It</h2>
+            <div class="founder-story">
+                <h3>The Hero's Journey: 2 Years Under Fire</h3>
+                <p><strong>2023-2025:</strong> Spent 2 years under active digital attack while building breakthrough security innovations:</p>
+                <ul style="text-align: left; margin: 20px 0; font-size: 1.1em; line-height: 1.8;">
+                    <li><strong>🔥 Forged Under Fire:</strong> Built 4 major security tools while being actively hacked/attacked</li>
+                    <li><strong>🧠 Pattern Recognition:</strong> 15+ years studying algorithm warfare and RF environments</li>
+                    <li><strong>🎵 Multi-Modal Innovation:</strong> Processes complex problems through music, movement, and meditation</li>
+                    <li><strong>⚡ Battle-Tested Credibility:</strong> Every feature proven in real hostile conditions</li>
+                    <li><strong>🎨 Creative Foundation:</strong> Fire spinning, flow arts, music production + AI innovation</li>
+                </ul>
+                <p style="margin-top: 30px; font-size: 1.2em;">
+                    <span class="highlight">Why this matters:</span> Corporate innovation fails because it's based on outdated psychological frameworks. 
+                    This multi-dimensional creative approach represents innovation patterns that institutional players literally cannot replicate.
+                </p>
+            </div>
+            <div class="quote">
+                "I don't just build security tools - I live in the chaos they're designed to protect against."
+            </div>
+        </div>
+        <div class="slide-number">6/10</div>
+    </div>
+
+    <!-- Slide 7: Market Opportunity -->
+    <div class="slide" id="slide7">
+        <div class="slide-content">
+            <h2>💰 Market Opportunity</h2>
+            <div class="market-opportunity">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-number">$45B</span>
+                        <span class="stat-label">Cybersecurity Market 2025</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">$0</span>
+                        <span class="stat-label">Consumer RF Privacy Tools</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Blue Ocean Market</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">5B</span>
+                        <span class="stat-label">Potential Users</span>
+                    </div>
+                </div>
+                <h3 style="margin-top: 40px;">Strategic Positioning</h3>
+                <p style="font-size: 1.2em; margin-top: 20px;">
+                    <span class="highlight">Essential on Both Sides:</span> The same RF technology can be used for surveillance OR counter-surveillance. 
+                    This makes us indispensable regardless of which side gains power in the growing surveillance state.
+                </p>
+            </div>
+        </div>
+        <div class="slide-number">7/10</div>
+    </div>
+
+    <!-- Slide 8: Competitive Advantage -->
+    <div class="slide" id="slide8">
+        <div class="slide-content">
+            <h2>🚀 Irreplaceable Innovation</h2>
+            <div class="competitive-advantage">
+                <h3>Why Others Can't Replicate This</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🧠 Unique Innovation Source</h4>
+                        <p>Ideas come from multi-dimensional creative processing that corporate structures cannot systematize or replicate</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>⚡ Battle-Tested Under Fire</h4>
+                        <p>Technology forged in real hostile conditions - competitors build in safe labs</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🎵 Multi-Modal Processing</h4>
+                        <p>Innovation through music, movement, meditation + technical skills creates patterns others can't access</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔥 Living the Problem</h4>
+                        <p>Built by someone who lives in the chaos the technology protects against</p>
+                    </div>
+                </div>
+                <div class="quote" style="margin-top: 40px;">
+                    "Companies are trying to buy the 'EMF Chaos Engine' brand, but all the code is open source. 
+                    They don't understand that the value isn't in owning the code - it's in the innovation capability that created it."
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">8/10</div>
+    </div>
+
+    <!-- Slide 9: Financial Projections -->
+    <div class="slide" id="slide9">
+        <div class="slide-content">
+            <h2>📈 Financial Projections</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">$150</span>
+                    <span class="stat-label">Hardware Cost</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">$499</span>
+                    <span class="stat-label">Consumer Price Point</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">70%</span>
+                    <span class="stat-label">Gross Margin</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">$50M</span>
+                    <span class="stat-label">Year 3 Revenue Target</span>
+                </div>
+            </div>
+            <div class="market-opportunity" style="margin-top: 40px;">
+                <h3>Revenue Streams</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🛡️ Consumer Hardware</h4>
+                        <p>Plug-and-play privacy devices for homes and businesses</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📱 Mobile Apps</h4>
+                        <p>Subscription-based RF monitoring and protection software</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🏢 Enterprise Licensing</h4>
+                        <p>Corporate security solutions and government contracts</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🎓 Training & Consulting</h4>
+                        <p>RF security education and implementation services</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">9/10</div>
+    </div>
+
+    <!-- Slide 10: Call to Action -->
+    <div class="slide" id="slide10">
+        <div class="slide-content">
+            <h2>🚀 Join the Privacy Revolution</h2>
+            <div class="cta-section">
+                <h3 style="color: #000; margin-bottom: 30px;">Investment Opportunity</h3>
+                <div class="stats-grid" style="margin: 30px 0;">
+                    <div class="stat-card" style="background: rgba(0,0,0,0.1); border-color: #000;">
+                        <span class="stat-number" style="color: #000;">$10-20M</span>
+                        <span class="stat-label" style="color: #000;">Current Valuation</span>
+                    </div>
+                    <div class="stat-card" style="background: rgba(0,0,0,0.1); border-color: #000;">
+                        <span class="stat-number" style="color: #000;">✓</span>
+                        <span class="stat-label" style="color: #000;">Viral Market Validation</span>
+                    </div>
+                    <div class="stat-card" style="background: rgba(0,0,0,0.1); border-color: #000;">
+                        <span class="stat-number" style="color: #000;">✓</span>
+                        <span class="stat-label" style="color: #000;">Battle-Tested Technology</span>
+                    </div>
+                    <div class="stat-card" style="background: rgba(0,0,0,0.1); border-color: #000;">
+                        <span class="stat-number" style="color: #000;">✓</span>
+                        <span class="stat-label" style="color: #000;">Irreplaceable Innovation</span>
+                    </div>
+                </div>
+                <p style="color: #000; font-size: 1.2em; margin: 30px 0;">
+                    The EMF Chaos Engine isn't just a product - it's proof of breakthrough innovation capability that companies are already trying to acquire.
+                </p>
+                <button class="cta-button">Schedule Demo</button>
+                <button class="cta-button">Investment Deck</button>
+                <button class="cta-button">Technical Deep Dive</button>
+            </div>
+            <div class="quote" style="margin-top: 40px;">
+                "This technology comes from someone who processes complex problems through music, movement, and meditation while under active digital warfare. 
+                That's not something you can hire or replicate - it's something you invest in."
+            </div>
+        </div>
+        <div class="slide-number">10/10</div>
+    </div>
+
+    <script>
+        // Navigation functionality
+        const slides = document.querySelectorAll('.slide');
+        const navigation = document.getElementById('navigation');
+
+        // Create navigation dots
+        slides.forEach((slide, index) => {
+            const dot = document.createElement('div');
+            dot.className = 'nav-dot';
+            if (index === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => scrollToSlide(index));
+            navigation.appendChild(dot);
+        });
+
+        function scrollToSlide(index) {
+            slides[index].scrollIntoView({ behavior: 'smooth' });
+            updateNavigation(index);
+        }
+
+        function updateNavigation(activeIndex) {
+            document.querySelectorAll('.nav-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === activeIndex);
+            });
+        }
+
+        // Update navigation on scroll
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.scrollY + window.innerHeight / 2;
+            slides.forEach((slide, index) => {
+                const slideTop = slide.offsetTop;
+                const slideBottom = slideTop + slide.offsetHeight;
+                if (scrollPosition >= slideTop && scrollPosition < slideBottom) {
+                    updateNavigation(index);
+                }
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const currentSlide = document.querySelector('.nav-dot.active');
+            const currentIndex = Array.from(document.querySelectorAll('.nav-dot')).indexOf(currentSlide);
+            
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                if (currentIndex < slides.length - 1) {
+                    scrollToSlide(currentIndex + 1);
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if (currentIndex > 0) {
+                    scrollToSlide(currentIndex - 1);
+                }
+            }
+        });
+
+        // CTA button functionality
+        document.querySelectorAll('.cta-button').forEach(button => {
+            button.addEventListener('click', () => {
+                alert(`🚀 ${button.textContent} requested!\n\nContact: FlowBotGirl\nEmail: [contact info]\nLinkedIn: [profile]\n\nReady to revolutionize privacy together!`);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+SLIDE 4: The Defense Gap Crisis
+===============================
+
+PROMPT FOR AI IMAGE GENERATION:
+
+"Professional cybersecurity infographic showing massive defense gap: Split-screen composition with 'ATTACK CAPABILITIES' on left showing exponential growth curve with AI-powered tools flooding from cloud servers, GitHub repositories spawning attack vectors, automated hacking frameworks multiplying rapidly. Right side shows 'CONSUMER DEFENSES' as nearly flat line with outdated antivirus icons, basic firewalls, and obsolete security measures. Central gap visualization as a widening chasm with '5 BILLION DEFENSELESS USERS' floating in the void. Background shows global map with red threat indicators overwhelming sparse blue defense points. Corporate logos (Google, Apple, Meta, Amazon) positioned as data collectors rather than protectors. Timeline showing 2020-2025 acceleration with AI democratization markers. Professional dark theme with red danger zones, minimal blue safe areas, and stark white gap highlighting the crisis. Include metrics overlays: '50,000+ new attack tools monthly', '75+ cities with Stingray deployment', '$1K DIY vs $50K barrier eliminated'. Style: Professional cybersecurity crisis visualization with stark contrast between threat growth and defense stagnation."
+
+KEY VISUAL ELEMENTS:
+- Split-screen attack vs defense comparison
+- Exponential growth curve for attacks
+- Flat line for consumer defenses
+- Widening gap visualization
+- Global threat map overlay
+- Corporate data collection positioning
+- Timeline showing AI acceleration
+- Stark red/blue contrast with white gap
+
+DIMENSIONS: 1920x1080 (16:9 presentation format)
+STYLE: Professional crisis visualization
+COLOR SCHEME: Dark background, red threats, minimal blue defenses, stark white gap

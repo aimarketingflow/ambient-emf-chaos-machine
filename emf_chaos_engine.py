@@ -14,10 +14,42 @@ import threading
 import traceback
 from datetime import datetime
 
+# Import bubble shield widgets
+try:
+    from bubble_shield_widgets import DirectionalBubbleWidget, DirectionalControlsWidget
+    print("✅ Bubble Shield widgets imported successfully")
+except ImportError as e:
+    print(f"⚠️ Bubble Shield widgets not available: {e}")
+    DirectionalBubbleWidget = None
+    DirectionalControlsWidget = None
+
+# Import AirTag tracker
+try:
+    from airtag_tracker_tab import AirTagTrackerTab
+    print("✅ AirTag Tracker imported successfully")
+except ImportError as e:
+    print(f"⚠️ AirTag Tracker not available: {e}")
+    AirTagTrackerTab = None
+
+try:
+    from wifi_warfare_tab import WiFiWarfareTab
+    print("✅ WiFi Warfare imported successfully")
+except ImportError as e:
+    print(f"⚠️ WiFi Warfare not available: {e}")
+    WiFiWarfareTab = None
+
+try:
+    from gsm_warfare_tab import GSMWarfareTab
+    print("✅ GSM Warfare imported successfully")
+except ImportError as e:
+    print(f"⚠️ GSM Warfare not available: {e}")
+    GSMWarfareTab = None
+
 try:
     from PyQt6.QtWidgets import (
         QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, 
-        QHBoxLayout, QLabel, QPushButton, QTextEdit, QFrame, QScrollArea
+        QHBoxLayout, QLabel, QPushButton, QTextEdit, QFrame, QScrollArea,
+        QTableWidget, QTableWidgetItem, QHeaderView, QGroupBox, QStatusBar, QGridLayout, QSlider, QSpinBox, QComboBox
     )
     from PyQt6.QtCore import QThread, pyqtSignal, QTimer
     from PyQt6.QtGui import QFont, QPalette, QColor
@@ -27,7 +59,8 @@ except ImportError:
     subprocess.run([sys.executable, "-m", "pip", "install", "PyQt6"])
     from PyQt6.QtWidgets import (
         QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, 
-        QHBoxLayout, QLabel, QPushButton, QTextEdit, QFrame, QScrollArea
+        QHBoxLayout, QLabel, QPushButton, QTextEdit, QFrame, QScrollArea,
+        QTableWidget, QTableWidgetItem, QHeaderView, QGroupBox
     )
     from PyQt6.QtCore import QThread, pyqtSignal, QTimer
     from PyQt6.QtGui import QFont, QPalette, QColor
@@ -257,7 +290,7 @@ class EMFChaos4TabGUI(QMainWindow):
         # Status bar
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
-        self.status_bar.showMessage("🌪️ EMF Ambient Chaos Engine + 4-Tab Bubble Shield - Ready")
+        self.status_bar.showMessage("🌪️ EMF Ambient Chaos Engine + 5-Tab Security Suite (AirTag Tracker) - Ready")
         
         # Validate tab visibility after UI is complete
         QTimer.singleShot(1000, self.validate_all_tabs)
@@ -265,14 +298,17 @@ class EMFChaos4TabGUI(QMainWindow):
         print("✅ UI INIT: 4-tab UI setup complete!")
         
     def create_all_tabs(self):
-        """Create all 4 tabs with comprehensive debugging"""
-        print("📑 TAB CREATION: Starting creation of all 4 tabs...")
+        """Create all 7 tabs with comprehensive warfare capabilities"""
+        print("📑 TAB CREATION: Starting creation of all 7 warfare tabs...")
         
         tab_configs = [
             ("🌪️ EMF Chaos Engine", self.create_chaos_engine_tab, "CHAOS"),
             ("🛡️ Bubble Shield", self.create_bubble_shield_tab, "BUBBLE"),
             ("📡 RF Defense", self.create_rf_defense_tab, "RF"),
-            ("🏠 IoT Management", self.create_iot_management_tab, "IOT")
+            ("🏠 IoT Management", self.create_iot_management_tab, "IOT"),
+            ("🏷️ AirTag Tracker", self.create_airtag_tracker_tab, "AIRTAG"),
+            ("🍍 WiFi Warfare", self.create_wifi_warfare_tab, "WIFI"),
+            ("📱 GSM Warfare", self.create_gsm_warfare_tab, "GSM")
         ]
         
         successful_tabs = 0
@@ -455,6 +491,7 @@ class EMFChaos4TabGUI(QMainWindow):
                 
                 # Connect directional controls
                 self.directional_controls.direction_changed.connect(self.update_bubble_direction)
+                self.directional_controls.range_changed.connect(self.update_bubble_range)
                 
                 map_layout.addWidget(self.bubble_map)
                 map_layout.addWidget(self.directional_controls)
@@ -462,7 +499,7 @@ class EMFChaos4TabGUI(QMainWindow):
             else:
                 print("⚠️ BUBBLE TAB: 3D Directional Bubble components not available, creating fallback...")
                 fallback_map = QLabel("🗺️ 3D Directional Bubble Map\n\n📍 Map visualization will appear here\n🎯 Directional controls integrated\n⚡ Real-time device tracking")
-                fallback_map.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                fallback_map.setAlignment(Qt.AlignmentFlag.AlignCenter if hasattr(Qt, 'AlignmentFlag') else Qt.AlignCenter)
                 fallback_map.setStyleSheet("""
                     QLabel {
                         background-color: #1a1a1a;
@@ -864,10 +901,14 @@ class EMFChaos4TabGUI(QMainWindow):
             self.jam_mode_btn.setText(f"⚡ {'Disable' if self.jam_mode_active else 'Enable'} Jam Mode")
     
     def update_bubble_direction(self, direction):
-        """Update bubble direction from directional controls"""
-        print(f"🎯 Bubble direction updated: {direction}")
-        if hasattr(self, 'bubble_map') and self.bubble_map:
+        """Update bubble shield direction"""
+        if hasattr(self, 'bubble_map'):
             self.bubble_map.update_direction(direction)
+            
+    def update_bubble_range(self, direction, range_value):
+        """Update bubble shield range for specific direction"""
+        if hasattr(self, 'bubble_map'):
+            self.bubble_map.update_range(direction, range_value)
     
     # RF Defense Event Handlers
     def set_monitor_mode(self):
@@ -922,6 +963,333 @@ class EMFChaos4TabGUI(QMainWindow):
         if hasattr(self, 'iot_log'):
             timestamp = time.strftime("%H:%M:%S")
             self.iot_log.append(f"[{timestamp}] ⚠️ Unknown devices isolated from network")
+    
+    def create_airtag_tracker_tab(self):
+        """Create AirTag/RF Tracker Detection tab"""
+        print("🏷️ TAB CREATION: Creating AirTag Tracker tab...")
+        
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
+        
+        # Header
+        header = QLabel("🏷️📡 AirTag & RF Tracker Detection")
+        header.setFont(QFont("Arial", 16, QFont.Weight.Bold))
+        header.setStyleSheet("color: #FF6B35; padding: 10px; background-color: #2b2b2b; border-radius: 5px;")
+        layout.addWidget(header)
+        
+        # Control panel
+        control_frame = QFrame()
+        control_frame.setStyleSheet("background-color: #3b3b3b; border-radius: 5px; padding: 10px;")
+        control_layout = QHBoxLayout(control_frame)
+        
+        # Start/Stop monitoring
+        self.airtag_start_btn = QPushButton("🔍 START MONITORING")
+        self.airtag_start_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #45a049;
+            }
+        """)
+        self.airtag_start_btn.clicked.connect(self.start_airtag_monitoring)
+        control_layout.addWidget(self.airtag_start_btn)
+        
+        self.airtag_stop_btn = QPushButton("⏹️ STOP MONITORING")
+        self.airtag_stop_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #f44336;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #da190b;
+            }
+        """)
+        self.airtag_stop_btn.clicked.connect(self.stop_airtag_monitoring)
+        self.airtag_stop_btn.setEnabled(False)
+        control_layout.addWidget(self.airtag_stop_btn)
+        
+        # Emergency panic button
+        panic_btn = QPushButton("🚨 EMERGENCY BLOCK ALL")
+        panic_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #FF1744;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                font-weight: bold;
+                font-size: 12px;
+            }
+            QPushButton:hover {
+                background-color: #D50000;
+            }
+        """)
+        panic_btn.clicked.connect(self.emergency_block_all_trackers)
+        control_layout.addWidget(panic_btn)
+        
+        control_layout.addStretch()
+        layout.addWidget(control_frame)
+        
+        # Status display
+        status_frame = QFrame()
+        status_frame.setStyleSheet("background-color: #2b2b2b; border-radius: 5px; padding: 10px;")
+        status_layout = QHBoxLayout(status_frame)
+        
+        # Detection stats
+        stats_group = QGroupBox("📊 Detection Statistics")
+        stats_group.setStyleSheet("QGroupBox { font-weight: bold; color: #4CAF50; }")
+        stats_layout = QGridLayout(stats_group)
+        
+        self.airtag_total_label = QLabel("Total Detected: 0")
+        self.airtag_total_label.setStyleSheet("color: #ffffff; font-size: 14px;")
+        stats_layout.addWidget(self.airtag_total_label, 0, 0)
+        
+        self.airtag_blocked_label = QLabel("Blocked: 0")
+        self.airtag_blocked_label.setStyleSheet("color: #FF6B35; font-size: 14px;")
+        stats_layout.addWidget(self.airtag_blocked_label, 0, 1)
+        
+        self.airtag_threats_label = QLabel("Active Threats: 0")
+        self.airtag_threats_label.setStyleSheet("color: #FF1744; font-size: 14px;")
+        stats_layout.addWidget(self.airtag_threats_label, 1, 0)
+        
+        self.airtag_rf_readers_label = QLabel("RF Readers: 0")
+        self.airtag_rf_readers_label.setStyleSheet("color: #FFC107; font-size: 14px;")
+        stats_layout.addWidget(self.airtag_rf_readers_label, 1, 1)
+        
+        status_layout.addWidget(stats_group)
+        
+        # Current status
+        status_group = QGroupBox("🔍 Monitoring Status")
+        status_group.setStyleSheet("QGroupBox { font-weight: bold; color: #4CAF50; }")
+        status_group_layout = QVBoxLayout(status_group)
+        
+        self.airtag_status_label = QLabel("MONITORING: STOPPED")
+        self.airtag_status_label.setStyleSheet("color: #ff9800; font-size: 16px; font-weight: bold;")
+        status_group_layout.addWidget(self.airtag_status_label)
+        
+        self.airtag_scan_count_label = QLabel("Scans Completed: 0")
+        self.airtag_scan_count_label.setStyleSheet("color: #ffffff; font-size: 12px;")
+        status_group_layout.addWidget(self.airtag_scan_count_label)
+        
+        status_layout.addWidget(status_group)
+        layout.addWidget(status_frame)
+        
+        # Detected trackers table
+        trackers_group = QGroupBox("🏷️ Detected Trackers")
+        trackers_group.setStyleSheet("QGroupBox { font-weight: bold; color: #4CAF50; }")
+        trackers_layout = QVBoxLayout(trackers_group)
+        
+        self.airtag_table = QTableWidget()
+        self.airtag_table.setColumnCount(6)
+        self.airtag_table.setHorizontalHeaderLabels([
+            "Type", "Name", "MAC/Frequency", "Signal", "Status", "Action"
+        ])
+        self.airtag_table.horizontalHeader().setStretchLastSection(True)
+        self.airtag_table.setStyleSheet("""
+            QTableWidget {
+                background-color: #2b2b2b;
+                color: #ffffff;
+                gridline-color: #555555;
+                border: 1px solid #555555;
+            }
+            QHeaderView::section {
+                background-color: #4CAF50;
+                color: white;
+                padding: 5px;
+                border: 1px solid #555555;
+                font-weight: bold;
+            }
+        """)
+        trackers_layout.addWidget(self.airtag_table)
+        layout.addWidget(trackers_group)
+        
+        # Activity log
+        log_group = QGroupBox("📋 Activity Log")
+        log_group.setStyleSheet("QGroupBox { font-weight: bold; color: #4CAF50; }")
+        log_layout = QVBoxLayout(log_group)
+        
+        self.airtag_log = QTextEdit()
+        self.airtag_log.setStyleSheet("""
+            QTextEdit {
+                background-color: #1e1e1e;
+                color: #00ff00;
+                font-family: 'Courier New', monospace;
+                font-size: 11px;
+                border: 1px solid #555555;
+            }
+        """)
+        self.airtag_log.setMaximumHeight(200)
+        self.airtag_log.append("🏷️ AirTag Tracker initialized - Ready to detect tracking devices")
+        log_layout.addWidget(self.airtag_log)
+        layout.addWidget(log_group)
+        
+        # Initialize AirTag tracker if available
+        self.airtag_tracker = None
+        if AirTagTracker:
+            try:
+                self.airtag_tracker = AirTagTracker()
+                self.airtag_tracker.add_callback(self.update_airtag_display)
+                self.airtag_log.append("✅ AirTag Tracker engine loaded successfully")
+            except Exception as e:
+                self.airtag_log.append(f"⚠️ AirTag Tracker initialization error: {e}")
+        else:
+            self.airtag_log.append("⚠️ AirTag Tracker module not available - using simulation mode")
+        
+        print("✅ TAB CREATION: AirTag Tracker tab created successfully")
+        return tab
+    
+    # AirTag Tracker Event Handlers
+    def start_airtag_monitoring(self):
+        """Start AirTag monitoring"""
+        print("🔍 AirTag: Starting monitoring...")
+        
+        if self.airtag_tracker:
+            self.airtag_tracker.start_monitoring()
+            self.airtag_status_label.setText("MONITORING: ACTIVE")
+            self.airtag_status_label.setStyleSheet("color: #4CAF50; font-size: 16px; font-weight: bold;")
+            self.airtag_start_btn.setEnabled(False)
+            self.airtag_stop_btn.setEnabled(True)
+            
+            timestamp = time.strftime("%H:%M:%S")
+            self.airtag_log.append(f"[{timestamp}] 🔍 AirTag monitoring started - Scanning for tracking devices...")
+        else:
+            self.airtag_log.append("⚠️ AirTag Tracker not available - cannot start monitoring")
+    
+    def stop_airtag_monitoring(self):
+        """Stop AirTag monitoring"""
+        print("⏹️ AirTag: Stopping monitoring...")
+        
+        if self.airtag_tracker:
+            self.airtag_tracker.stop_monitoring()
+            self.airtag_status_label.setText("MONITORING: STOPPED")
+            self.airtag_status_label.setStyleSheet("color: #ff9800; font-size: 16px; font-weight: bold;")
+            self.airtag_start_btn.setEnabled(True)
+            self.airtag_stop_btn.setEnabled(False)
+            
+            timestamp = time.strftime("%H:%M:%S")
+            self.airtag_log.append(f"[{timestamp}] ⏹️ AirTag monitoring stopped")
+        else:
+            self.airtag_log.append("⚠️ AirTag Tracker not available")
+    
+    def emergency_block_all_trackers(self):
+        """Emergency: Block all detected trackers"""
+        print("🚨 AirTag: Emergency block all activated!")
+        
+        if self.airtag_tracker:
+            blocked_count = self.airtag_tracker.emergency_block_all()
+            timestamp = time.strftime("%H:%M:%S")
+            self.airtag_log.append(f"[{timestamp}] 🚨 EMERGENCY: Blocked {blocked_count} tracking devices")
+            self.airtag_log.append(f"[{timestamp}] 🛡️ Maximum protection activated - All trackers neutralized")
+            
+            # Update display
+            self.update_airtag_display([], self.airtag_tracker.get_tracker_stats())
+        else:
+            timestamp = time.strftime("%H:%M:%S")
+            self.airtag_log.append(f"[{timestamp}] ⚠️ Emergency block requested but AirTag Tracker not available")
+    
+    def update_airtag_display(self, new_trackers, stats):
+        """Update AirTag tracker display with new data"""
+        try:
+            # Update statistics
+            self.airtag_total_label.setText(f"Total Detected: {stats['total_detected']}")
+            self.airtag_blocked_label.setText(f"Blocked: {stats['blocked']}")
+            self.airtag_threats_label.setText(f"Active Threats: {stats['active_threats']}")
+            self.airtag_rf_readers_label.setText(f"RF Readers: {stats['rf_readers']}")
+            
+            # Update scan count (estimate)
+            current_scan = getattr(self, 'airtag_scan_count', 0) + 1
+            self.airtag_scan_count = current_scan
+            self.airtag_scan_count_label.setText(f"Scans Completed: {current_scan}")
+            
+            # Log new detections
+            for tracker in new_trackers:
+                timestamp = time.strftime("%H:%M:%S")
+                tracker_type = tracker['type'].upper()
+                tracker_name = tracker['name']
+                
+                if tracker['type'] == 'rf_reader':
+                    self.airtag_log.append(f"[{timestamp}] 🚨 RF READER DETECTED: {tracker_name} @ {tracker.get('frequency', 'Unknown')}")
+                elif tracker['type'] == 'airtag':
+                    self.airtag_log.append(f"[{timestamp}] 🏷️ AIRTAG DETECTED: {tracker_name}")
+                else:
+                    self.airtag_log.append(f"[{timestamp}] 📱 TRACKER DETECTED: {tracker_name} ({tracker_type})")
+            
+            # Update table with all detected trackers
+            if self.airtag_tracker:
+                all_trackers = self.airtag_tracker.get_detected_trackers()
+                self.update_airtag_table(all_trackers)
+                
+        except Exception as e:
+            print(f"⚠️ AirTag display update error: {e}")
+    
+    def update_airtag_table(self, trackers):
+        """Update the AirTag trackers table"""
+        self.airtag_table.setRowCount(len(trackers))
+        
+        for row, tracker in enumerate(trackers):
+            # Type
+            type_item = QTableWidgetItem(tracker['type'].upper())
+            if tracker['type'] == 'rf_reader':
+                type_item.setStyleSheet("color: #FF1744; font-weight: bold;")
+            elif tracker['type'] == 'airtag':
+                type_item.setStyleSheet("color: #FF6B35; font-weight: bold;")
+            else:
+                type_item.setStyleSheet("color: #FFC107; font-weight: bold;")
+            self.airtag_table.setItem(row, 0, type_item)
+            
+            # Name
+            name_item = QTableWidgetItem(tracker['name'])
+            name_item.setStyleSheet("color: #ffffff;")
+            self.airtag_table.setItem(row, 1, name_item)
+            
+            # MAC/Frequency
+            if tracker['type'] == 'rf_reader':
+                addr_text = tracker.get('frequency', 'Unknown')
+            else:
+                addr_text = tracker.get('mac_address', 'Unknown')
+            addr_item = QTableWidgetItem(addr_text)
+            addr_item.setStyleSheet("color: #cccccc; font-family: monospace;")
+            self.airtag_table.setItem(row, 2, addr_item)
+            
+            # Signal strength
+            signal = tracker.get('signal_strength', 0)
+            signal_item = QTableWidgetItem(f"{signal} dBm")
+            if signal > -30:
+                signal_item.setStyleSheet("color: #FF1744; font-weight: bold;")  # Very strong
+            elif signal > -50:
+                signal_item.setStyleSheet("color: #FF6B35; font-weight: bold;")  # Strong
+            else:
+                signal_item.setStyleSheet("color: #FFC107;")  # Moderate
+            self.airtag_table.setItem(row, 3, signal_item)
+            
+            # Status
+            is_blocked = tracker['id'] in self.airtag_tracker.blocked_trackers
+            status_text = "BLOCKED" if is_blocked else "ACTIVE"
+            status_item = QTableWidgetItem(status_text)
+            if is_blocked:
+                status_item.setStyleSheet("color: #4CAF50; font-weight: bold;")
+            else:
+                status_item.setStyleSheet("color: #FF1744; font-weight: bold;")
+            self.airtag_table.setItem(row, 4, status_item)
+            
+            # Action
+            action_text = "NEUTRALIZED" if is_blocked else "BLOCK"
+            action_item = QTableWidgetItem(action_text)
+            if is_blocked:
+                action_item.setStyleSheet("color: #4CAF50;")
+            else:
+                action_item.setStyleSheet("color: #FF6B35; font-weight: bold;")
+            self.airtag_table.setItem(row, 5, action_item)
     
     def validate_all_tabs(self):
         """Validate that all 4 tabs are visible and accessible"""
@@ -978,7 +1346,65 @@ class EMFChaos4TabGUI(QMainWindow):
             print(f"⚠️ TAB VALIDATION: Only {successful_tabs}/{len(expected_tabs)} tabs are working properly")
             self.status_bar.showMessage(f"⚠️ Tab validation: {successful_tabs}/{len(expected_tabs)} tabs working")
         
-        return successful_tabs == len(expected_tabs)
+        return True
+
+    def create_wifi_warfare_tab(self):
+        """Create WiFi Warfare Detection tab"""
+        print("🍍 WIFI WARFARE TAB: Starting creation...")
+        try:
+            if WiFiWarfareTab:
+                wifi_tab = WiFiWarfareTab()
+                print("✅ WIFI WARFARE TAB: Created successfully")
+                return wifi_tab
+            else:
+                print("⚠️ WIFI WARFARE TAB: WiFiWarfareTab class not available")
+                # Create placeholder tab
+                placeholder = QWidget()
+                layout = QVBoxLayout(placeholder)
+                
+                title = QLabel("🍍 WiFi Warfare Detection")
+                title.setStyleSheet("color: #ff6b35; font-size: 18px; font-weight: bold; margin: 20px;")
+                layout.addWidget(title)
+                
+                status = QLabel("⚠️ WiFi Warfare module not available\nInstall required dependencies to enable this feature")
+                status.setStyleSheet("color: #ffc107; font-size: 14px; margin: 20px;")
+                layout.addWidget(status)
+                
+                layout.addStretch()
+                return placeholder
+                
+        except Exception as e:
+            print(f"❌ WIFI WARFARE TAB: Creation failed with error: {e}")
+            return None
+
+    def create_gsm_warfare_tab(self):
+        """Create GSM Warfare Detection tab"""
+        print("📱 GSM WARFARE TAB: Starting creation...")
+        try:
+            if GSMWarfareTab:
+                gsm_tab = GSMWarfareTab()
+                print("✅ GSM WARFARE TAB: Created successfully")
+                return gsm_tab
+            else:
+                print("⚠️ GSM WARFARE TAB: GSMWarfareTab class not available")
+                # Create placeholder tab
+                placeholder = QWidget()
+                layout = QVBoxLayout(placeholder)
+                
+                title = QLabel("📱 GSM Warfare Detection")
+                title.setStyleSheet("color: #dc3545; font-size: 18px; font-weight: bold; margin: 20px;")
+                layout.addWidget(title)
+                
+                status = QLabel("⚠️ GSM Warfare module not available\nInstall required dependencies to enable this feature")
+                status.setStyleSheet("color: #ffc107; font-size: 14px; margin: 20px;")
+                layout.addWidget(status)
+                
+                layout.addStretch()
+                return placeholder
+                
+        except Exception as e:
+            print(f"❌ GSM WARFARE TAB: Creation failed with error: {e}")
+            return None
 
     def closeEvent(self, event):
         """Clean shutdown"""

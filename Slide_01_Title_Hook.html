@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slide 1: The Weekend Project That Broke the Internet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            text-align: center;
+            z-index: 10;
+            max-width: 90%;
+        }
+
+        .main-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00d4ff, #ff6b35, #ffd700);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+
+        .subtitle {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: #e0e0e0;
+            font-weight: 300;
+        }
+
+        .metrics-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .metric-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #00d4ff;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .tagline {
+            font-size: 1.3rem;
+            color: #ffd700;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .speaker-info {
+            font-size: 1.1rem;
+            color: #b0b0b0;
+        }
+
+        .logo-placeholder {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            border: 3px dashed #00d4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 212, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-text {
+            color: #00d4ff;
+            font-size: 0.9rem;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .rf-wave {
+            position: absolute;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50%;
+            animation: pulse 4s infinite;
+        }
+
+        .rf-wave:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 0s;
+        }
+
+        .rf-wave:nth-child(2) {
+            width: 500px;
+            height: 500px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 1s;
+        }
+
+        .rf-wave:nth-child(3) {
+            width: 700px;
+            height: 700px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 2s;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ffd700;
+            border-radius: 50%;
+            animation: float 6s infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) translateX(0px);
+                opacity: 0.7;
+            }
+            33% {
+                transform: translateY(-20px) translateX(10px);
+                opacity: 1;
+            }
+            66% {
+                transform: translateY(10px) translateX(-15px);
+                opacity: 0.8;
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+            .subtitle {
+                font-size: 1.4rem;
+            }
+            .metrics-container {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation">
+        <div class="rf-wave"></div>
+        <div class="rf-wave"></div>
+        <div class="rf-wave"></div>
+        <!-- Floating particles -->
+        <div class="particle" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+        <div class="particle" style="top: 60%; left: 80%; animation-delay: 2s;"></div>
+        <div class="particle" style="top: 30%; left: 70%; animation-delay: 4s;"></div>
+        <div class="particle" style="top: 80%; left: 20%; animation-delay: 1s;"></div>
+        <div class="particle" style="top: 10%; left: 90%; animation-delay: 3s;"></div>
+    </div>
+
+    <div class="slide-container">
+        <div class="logo-placeholder">
+            <div class="logo-text">
+                🌪️ EMF CHAOS ENGINE<br>
+                LOGO WITH ANIMATED<br>
+                VIRAL EXPLOSION BADGE
+            </div>
+        </div>
+
+        <h1 class="main-title">The Weekend Project That Broke the Internet</h1>
+        
+        <p class="subtitle">From Casual LinkedIn Post to $10-20M Valuation in 48 Hours</p>
+
+        <div class="metrics-container">
+            <div class="metric-item">
+                <div class="metric-label">VIRAL SUCCESS</div>
+                <div class="metric-value">Multiple Platforms</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-label">ACQUISITION OFFERS</div>
+                <div class="metric-value">Immediate</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-label">BATTLE-TESTED</div>
+                <div class="metric-value">Real Threats</div>
+            </div>
+        </div>
+
+        <p class="tagline">"Protecting People, Not Corporations"</p>
+        
+        <p class="speaker-info">FlowBotGirl | AIMF LLC | August 2025</p>
+    </div>
+
+    <script>
+        // Add dynamic particle generation
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 6 + 's';
+            document.querySelector('.background-animation').appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 6000);
+        }
+
+        // Generate particles periodically
+        setInterval(createParticle, 2000);
+
+        // Simulate viral metrics counter
+        let views = 0;
+        const targetViews = 50000;
+        const increment = targetViews / 100;
+
+        function updateMetrics() {
+            if (views < targetViews) {
+                views += increment;
+                // Could update counter display here if needed
+            }
+        }
+
+        setInterval(updateMetrics, 100);
+    </script>
+</body>
+</html>
