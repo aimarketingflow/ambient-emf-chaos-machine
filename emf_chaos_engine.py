@@ -31,6 +31,14 @@ except ImportError as e:
     print(f"⚠️ AirTag Tracker not available: {e}")
     AirTagTrackerTab = None
 
+# Import SDR Hardware Monitor
+try:
+    from sdr_hardware_monitor import SDRHardwareMonitor
+    print("✅ SDR Hardware Monitor imported successfully")
+except ImportError as e:
+    print(f"⚠️ SDR Hardware Monitor not available: {e}")
+    SDRHardwareMonitor = None
+
 try:
     from wifi_warfare_tab import WiFiWarfareTab
     print("✅ WiFi Warfare imported successfully")
@@ -52,7 +60,7 @@ try:
         QTableWidget, QTableWidgetItem, QHeaderView, QGroupBox, QStatusBar, QGridLayout, QSlider, QSpinBox, QComboBox
     )
     from PyQt6.QtCore import QThread, pyqtSignal, QTimer
-    from PyQt6.QtGui import QFont, QPalette, QColor
+    from PyQt6.QtGui import QFont, QPalette, QColor, QPixmap, QIcon
 except ImportError:
     print("❌ PyQt6 not found. Installing...")
     import subprocess
@@ -233,6 +241,25 @@ class EMFChaos4TabGUI(QMainWindow):
         self.shield_active = False
         self.jam_mode_active = False
         
+        # Initialize SDR Hardware Monitor
+        self.sdr_monitor = None
+        if SDRHardwareMonitor:
+            print("🔍 Initializing SDR Hardware Monitor...")
+            self.sdr_monitor = SDRHardwareMonitor(callback_on_disconnect=self.emergency_shutdown)
+            
+            # Perform initial hardware check
+            if not self.sdr_monitor.initial_hardware_check():
+                print("🚨 CRITICAL: HackRF One not detected!")
+                print("💀 EMF Chaos Engine requires SDR hardware to operate")
+                self.show_hardware_error_and_exit()
+                return
+            
+            # Start continuous monitoring
+            self.sdr_monitor.start_monitoring()
+            print("✅ SDR Hardware Monitor active - HackRF One validated")
+        else:
+            print("⚠️ SDR Hardware Monitor not available - running without hardware validation")
+        
         print("🎨 MAIN GUI: Starting UI initialization...")
         self.init_ui()
         print("⚡ MAIN GUI: Starting chaos engine...")
@@ -245,6 +272,19 @@ class EMFChaos4TabGUI(QMainWindow):
         
         self.setWindowTitle("🌪️ EMF Ambient Chaos Engine + 4-Tab Bubble Shield ⚡")
         self.setGeometry(100, 100, 1400, 900)
+        
+        # Set AIMF logo as window icon
+        try:
+            import os
+            logo_path = os.path.join(os.path.dirname(__file__), "aimf_logo.png")
+            if os.path.exists(logo_path):
+                from PyQt6.QtGui import QPixmap, QIcon
+                self.setWindowIcon(QIcon(logo_path))
+                print("✅ AIMF logo loaded as window icon")
+            else:
+                print("⚠️ AIMF logo not found, using default icon")
+        except Exception as e:
+            print(f"⚠️ Could not load AIMF logo: {e}")
         
         # Set dark theme
         self.setStyleSheet("""
@@ -1406,11 +1446,73 @@ class EMFChaos4TabGUI(QMainWindow):
             print(f"❌ GSM WARFARE TAB: Creation failed with error: {e}")
             return None
 
+    def emergency_shutdown(self):
+        """Emergency shutdown when SDR hardware is disconnected"""
+        print("🚨 EMERGENCY SHUTDOWN INITIATED!")
+        print("💀 HackRF One disconnected - EMF Chaos Engine cannot continue")
+        print("🛡️ Stopping all warfare operations...")
+        
+        # Stop chaos engine
+        if self.chaos_thread:
+            self.chaos_thread.stop()
+            print("✅ Chaos engine stopped")
+        
+        # Stop SDR monitoring
+        if self.sdr_monitor:
+            self.sdr_monitor.stop_monitoring()
+            print("✅ SDR monitoring stopped")
+        
+        # Show emergency dialog
+        try:
+            from PyQt6.QtWidgets import QMessageBox
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Icon.Critical)
+            msg.setWindowTitle("🚨 HARDWARE EMERGENCY")
+            msg.setText("HackRF One SDR Disconnected!")
+            msg.setInformativeText("EMF Chaos Engine requires SDR hardware to operate safely.\n\nPlease reconnect your HackRF One and restart the application.")
+            msg.setStandardButtons(QMessageBox.StandardButton.Ok)
+            msg.exec()
+        except Exception as e:
+            print(f"⚠️ Could not show emergency dialog: {e}")
+        
+        # Force application exit
+        print("💀 Forcing application exit...")
+        import sys
+        sys.exit(1)
+    
+    def show_hardware_error_and_exit(self):
+        """Show hardware error dialog and exit application"""
+        print("🚨 HARDWARE ERROR: Showing error dialog and exiting...")
+        
+        try:
+            from PyQt6.QtWidgets import QMessageBox
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Icon.Critical)
+            msg.setWindowTitle("🚨 HARDWARE REQUIRED")
+            msg.setText("HackRF One SDR Not Detected!")
+            msg.setInformativeText("EMF Chaos Engine requires HackRF One hardware to operate.\n\nPlease ensure:\n• HackRF One is connected via USB\n• HackRF tools are installed\n• No other software is using the device")
+            msg.setStandardButtons(QMessageBox.StandardButton.Ok)
+            msg.exec()
+        except Exception as e:
+            print(f"⚠️ Could not show hardware error dialog: {e}")
+        
+        # Exit application
+        import sys
+        sys.exit(1)
+
     def closeEvent(self, event):
         """Clean shutdown"""
         print("🔄 SHUTDOWN: Stopping chaos engine...")
         if self.chaos_thread:
             self.chaos_thread.stop()
+        
+        # Stop SDR hardware monitoring
+        if self.sdr_monitor:
+            print("🔄 SHUTDOWN: Stopping SDR hardware monitoring...")
+            self.sdr_monitor.stop_monitoring()
+            print("✅ SDR monitoring stopped")
+        
+        print("✅ Clean shutdown complete")
         event.accept()
 
 if __name__ == "__main__":

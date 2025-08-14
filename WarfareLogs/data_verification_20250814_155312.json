@@ -1,0 +1,38 @@
+{
+  "timestamp": "2025-08-14T15:53:12.495992",
+  "verification_results": {
+    "sdr_hardware": {
+      "status": "LIVE",
+      "evidence": [
+        "HackRF detected: 000000000000000078d063dc2b6f6967"
+      ]
+    },
+    "gsm_data": {
+      "status": "SIMULATED",
+      "evidence": [
+        "random.random()",
+        "random.choice(",
+        "random.randint(",
+        "# Simulate",
+        "if random.random() <"
+      ]
+    },
+    "bluetooth_data": {
+      "status": "ERROR",
+      "evidence": [
+        "Error: [Errno 2] No such file or directory: 'hcitool'"
+      ]
+    },
+    "wifi_data": {
+      "status": "ERROR",
+      "evidence": [
+        "Error: [Errno 2] No such file or directory: 'airport'"
+      ]
+    },
+    "overall_authenticity": "MIXED"
+  },
+  "summary": {
+    "overall_authenticity": "MIXED",
+    "verification_date": "2025-08-14 15:53:12"
+  }
+}

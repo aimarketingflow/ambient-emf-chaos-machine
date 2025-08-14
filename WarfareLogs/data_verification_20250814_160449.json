@@ -1,0 +1,34 @@
+{
+  "timestamp": "2025-08-14T16:04:49.382671",
+  "verification_results": {
+    "sdr_hardware": {
+      "status": "LIVE",
+      "evidence": [
+        "HackRF detected: 000000000000000078d063dc2b6f6967"
+      ]
+    },
+    "gsm_data": {
+      "status": "LIVE",
+      "evidence": [
+        "No simulation markers found"
+      ]
+    },
+    "bluetooth_data": {
+      "status": "LIVE_CAPABLE",
+      "evidence": [
+        "macOS Bluetooth system active"
+      ]
+    },
+    "wifi_data": {
+      "status": "LIVE_CAPABLE",
+      "evidence": [
+        "WiFi hardware detected via networksetup"
+      ]
+    },
+    "overall_authenticity": "MOSTLY_LIVE"
+  },
+  "summary": {
+    "overall_authenticity": "MOSTLY_LIVE",
+    "verification_date": "2025-08-14 16:04:49"
+  }
+}
